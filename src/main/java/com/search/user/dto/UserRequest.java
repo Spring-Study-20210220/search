@@ -12,10 +12,10 @@ public class UserRequest {
 
     private String name;
 
-    private int age;
+    private Integer age;
 
     @Builder
-    public UserRequest(String name, int age) {
+    public UserRequest(String name, Integer age) {
         this.name = name;
         this.age = age;
     }
