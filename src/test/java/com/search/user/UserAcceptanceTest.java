@@ -24,6 +24,7 @@ public class UserAcceptanceTest {
 
         UserResponse response = webTestClient
                 .post()
+                .uri("/user")
                 .body(Mono.just(request), UserRequest.class)
                 .exchange()
                 .expectStatus().isCreated()
