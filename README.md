@@ -5,7 +5,7 @@
 ### Posts
 |Method|URL|Param|Return|
 |---|---|---|---|
-|POST|/posts|content : String </br> user-id : Long </br> taggedUserIds : [Long]| |
+|POST|/posts|content : String </br> user-id : Long </br> taggedUserIds : [Long]| id : Long|
 |GET|/post/list?keyword=""?user-id=""|keyword : String| |
 
 ### User
