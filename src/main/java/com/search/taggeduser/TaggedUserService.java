@@ -25,11 +25,10 @@ public class TaggedUserService {
                     .orElseThrow(
                             () -> new IllegalArgumentException("존재하지 않는 id 입니다")
                     );
-
             TaggedUser taggedUser = new TaggedUser(posts, user);
             TaggedUser saved = taggedUserRepository.save(taggedUser);
             user.addTaggedUser(saved);
-            posts.addTaggedUser(taggedUser);
+            posts.addTaggedUser(saved);
         }
     }
 }
