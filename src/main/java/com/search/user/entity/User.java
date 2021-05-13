@@ -19,15 +19,8 @@ public class User {
     private int age;
 
     public User(Long id, String name, int age) {
-        validateArguments(age);
         this.id = id;
         this.name = name;
         this.age = age;
-    }
-
-    private void validateArguments(int age) {
-        if(age < 0) {
-            throw new IllegalArgumentException();
-        }
     }
 }

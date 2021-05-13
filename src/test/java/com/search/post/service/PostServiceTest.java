@@ -3,7 +3,9 @@ package com.search.post.service;
 import com.search.post.entity.Post;
 import com.search.post.repository.PostRepository;
 import com.search.post.req.SavePostRequest;
+import com.search.post.res.CorrectionResponse;
 import com.search.post.res.SavePostResponse;
+import com.search.post.res.SearchPostsResponse;
 import com.search.user.entity.User;
 import com.search.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +45,6 @@ public class PostServiceTest {
         post = new Post(1L, user, "test contents", 0, LocalDateTime.now(), LocalDateTime.now());
     }
 
-    //todo: argument captor
     @Test
     void create() {
         given(userRepository.findById(any())).willReturn(Optional.of(user));
@@ -53,5 +55,14 @@ public class PostServiceTest {
 
         assertThat(savePostResponse.getContent()).isEqualTo(savePostRequest.getContent());
         assertThat(savePostResponse.getUserResponse().getName()).isEqualTo(user.getName());
+    }
+
+    @Test
+    void searchTypo() {
+        String typo = "민초 실어";
+        SearchPostsResponse searchPostsResponse = postService.search(typo);
+        List<CorrectionResponse> corrections = searchPostsResponse.getCorrections();
+        assertThat(corrections.get(0).getFrom()).isEqualTo("실어");
+        assertThat(corrections.get(0).getTo()).isEqualTo("싫어");
     }
 }

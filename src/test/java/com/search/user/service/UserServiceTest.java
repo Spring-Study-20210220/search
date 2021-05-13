@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -28,22 +29,29 @@ public class UserServiceTest {
     private UserService userService;
 
     private User user;
+    private User failUser;
 
     @BeforeEach
     void setUp() {
         user = new User(1L, "name", 11);
+        failUser = new User(1L, "name", -5);
     }
 
-    //todo: argument 체크
     @Test
     void create() {
-        // given
-        given(userRepository.save(any())).willReturn(user);
-        // when
         SaveUserRequest saveUserRequest = new SaveUserRequest(user.getName(), user.getAge());
+        given(userRepository.save(new User(any(), saveUserRequest.getName(), saveUserRequest.getAge()))).willReturn(user);
+
         SaveUserResponse saveUser = userService.save(saveUserRequest);
-        // then
+
         assertThat(saveUser.getName()).isEqualTo(user.getName());
+    }
+
+    @Test
+    void createFail() {
+        SaveUserRequest saveUserRequest = new SaveUserRequest(failUser.getName(), failUser.getAge());
+
+        assertThatThrownBy(() -> userService.save(saveUserRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

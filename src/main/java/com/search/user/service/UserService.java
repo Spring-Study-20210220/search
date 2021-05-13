@@ -16,6 +16,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     public SaveUserResponse save(SaveUserRequest req) {
+        validateArguments(req.getAge());
         User savedUser = userRepository.save(new User(0L, req.getName(), req.getAge()));
         return new SaveUserResponse(savedUser.getId(), savedUser.getName());
     }
@@ -24,5 +25,11 @@ public class UserService {
     public UserResponse get(Long id) {
         User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         return new UserResponse(user.getId(), user.getName(), user.getAge());
+    }
+
+    private void validateArguments(int age) {
+        if(age < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 }

@@ -1,5 +1,6 @@
-package com.search.censor;
+package com.search.censor.entity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 
 @NoArgsConstructor
 @Entity(name = "censored_words")
+@Getter
 public class CensoredWord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

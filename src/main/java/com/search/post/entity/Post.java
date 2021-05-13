@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -15,7 +16,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Column(nullable = false)
@@ -37,5 +38,11 @@ public class Post {
         this.viewCnt = viewCnt;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public boolean isContain(List<String> keywordSplits) {
+        return keywordSplits.stream()
+                .filter(split -> content.contains(split))
+                .count() > 0;
     }
 }
