@@ -15,7 +15,6 @@
 - GET /post/list?keyword=""?user-id="" 의 응답
 ```json
 {
-  //포스트 목록들
   data: [
     {
       userId: Long
@@ -29,14 +28,12 @@
       ]
     }
   ],
-  //검색어 교정 여부
   corrected: [
     {
       from: String
       to: String
     }
   ],
-  //결과물 필터 여부
   censored: Boolean
 }
 ```
