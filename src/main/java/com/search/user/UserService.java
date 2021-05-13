@@ -20,4 +20,12 @@ public class UserService {
         User saveUser = userRepository.save(user);
         return new UserResponse(saveUser.getId());
     }
+
+    @Transactional
+    public int getUserAge(Long id){
+        User user = userRepository.findById(id).orElseThrow(
+                ()->new IllegalArgumentException("존재하지 않는 유저입니다.")
+        );
+        return user.getAge();
+    }
 }

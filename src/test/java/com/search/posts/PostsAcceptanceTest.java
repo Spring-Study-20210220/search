@@ -3,6 +3,7 @@ package com.search.posts;
 import com.search.DatabaseCleanup;
 import com.search.posts.dto.PostsSaveRequest;
 import com.search.posts.dto.PostsSaveResponse;
+import com.search.posts.dto.PostSearchResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -34,10 +35,10 @@ public class PostsAcceptanceTest {
     @Test
     void 포스트_등록_테스트() {
         PostsTestData postsTestData = new PostsTestData(webTestClient);
-        List<Long> taggedUserIdList= new LinkedList<>();
-        taggedUserIdList.add(postsTestData.userSaveForTest("테스트1",25));
-        taggedUserIdList.add(postsTestData.userSaveForTest("테스트2",30));
-        taggedUserIdList.add(postsTestData.userSaveForTest("테스트3",35));
+        List<Long> taggedUserIdList = new LinkedList<>();
+        taggedUserIdList.add(postsTestData.userSaveForTest("테스트1", 25));
+        taggedUserIdList.add(postsTestData.userSaveForTest("테스트2", 30));
+        taggedUserIdList.add(postsTestData.userSaveForTest("테스트3", 35));
 
         PostsSaveRequest request = PostsSaveRequest.builder()
                 .content("content")
@@ -76,5 +77,23 @@ public class PostsAcceptanceTest {
                 .getResponseBody();
 
         Assertions.assertThat(response.getId()).isPositive();
+    }
+
+    @Test
+    void 포스트를_키워드로_검색() {
+        PostsTestData postsTestData = new PostsTestData(webTestClient);
+        Long user_id = postsTestData.userSaveForTest("testuser", 18);
+
+        String keywordParam = "토비의 스프링";
+        String userIdParam = user_id.toString();
+
+        PostSearchResponse response = webTestClient
+                .get()
+                .uri("/posts/list?keyword=" + keywordParam + "?user-id=" + userIdParam)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PostSearchResponse.class)
+                .returnResult()
+                .getResponseBody();
     }
 }
