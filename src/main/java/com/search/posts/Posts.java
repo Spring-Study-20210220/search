@@ -40,6 +40,7 @@ public class Posts {
     @OneToMany(mappedBy = "posts", fetch = FetchType.LAZY)
     private List<TaggedUser> taggedUsers = new LinkedList<>();
 
+    @Builder
     public Posts(String content) {
         this.content = content;
     }

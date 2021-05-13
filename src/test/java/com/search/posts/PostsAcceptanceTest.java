@@ -1,10 +1,8 @@
 package com.search.posts;
 
+import com.search.DatabaseCleanup;
 import com.search.posts.dto.PostsSaveRequest;
 import com.search.posts.dto.PostsSaveResponse;
-import com.search.user.User;
-import com.search.user.dto.UserRequest;
-import com.search.user.dto.UserResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -12,12 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +22,14 @@ public class PostsAcceptanceTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @Autowired
+    private DatabaseCleanup dbClean;
+
+    @AfterEach
+    void tearDown() {
+        dbClean.execute();
+    }
 
     @Test
     void 포스트_등록_테스트() {

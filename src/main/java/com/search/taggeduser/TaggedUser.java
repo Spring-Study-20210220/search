@@ -3,6 +3,7 @@ package com.search.taggeduser;
 import com.search.posts.Posts;
 import com.search.user.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +26,7 @@ public class TaggedUser {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Builder
     public TaggedUser(Posts posts, User user) {
         this.posts = posts;
         this.user = user;
