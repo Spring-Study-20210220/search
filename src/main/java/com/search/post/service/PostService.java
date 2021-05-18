@@ -6,6 +6,7 @@ import com.search.dictionary.service.DictionaryService;
 import com.search.post.entity.Post;
 import com.search.post.repository.PostRepository;
 import com.search.post.req.SavePostRequest;
+import com.search.post.res.PostResponse;
 import com.search.post.res.SavePostResponse;
 import com.search.post.res.SearchPostsResponse;
 import com.search.sort.service.SortCriteriaService;
@@ -25,12 +26,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class PostService {
-
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final CensoredWordService censoredWordService;
-    private final DictionaryService dictionaryService;
-    private final SortCriteriaService sortCriteriaService;
 
     public SavePostResponse save(SavePostRequest savePostRequest) {
         User user = userRepository.findById(savePostRequest.getUserId()).orElseThrow(IllegalArgumentException::new);
@@ -44,24 +41,11 @@ public class PostService {
                 UserResponse.of(savedPost.getUser()));
     }
 
-    public SearchPostsResponse search(String keyword) {
-        //typo
-        CorrectedSentence correctedSentence = dictionaryService.correct(keyword);
-        //search keyword
-        List<String> keywordSplits = Arrays.asList(correctedSentence.getValue().split(" "));
-        List<Post> filteredPosts = postRepository.findAll()
+    public List<Post> search(String keyword) {
+        List<String> keywordSplits = Arrays.asList(keyword.split(" "));
+        return postRepository.findAll()
                 .stream()
                 .filter(post -> post.isContain(keywordSplits))
                 .collect(Collectors.toList());
-        //censor
-        List<String> censoredList = censoredWordService.gets();
-        List<Post> censoredPosts = filteredPosts.stream()
-                .filter(post -> post.isContain(censoredList))
-                .collect(Collectors.toList());
-        //filter by age
-
-        return null;
     }
-
-
 }

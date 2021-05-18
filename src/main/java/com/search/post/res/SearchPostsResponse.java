@@ -10,5 +10,5 @@ import java.util.List;
 public class SearchPostsResponse {
     private final List<PostResponse> posts;
     private final List<CorrectionResponse> corrections;
-    private final Boolean Censored;
+    private final Boolean censored;
 }

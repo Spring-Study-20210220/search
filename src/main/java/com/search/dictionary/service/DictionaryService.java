@@ -5,6 +5,8 @@ import com.search.dictionary.entity.Dictionary;
 import com.search.dictionary.repository.DictionaryRepository;
 import com.search.post.res.CorrectionResponse;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,19 +24,31 @@ public class DictionaryService {
     }
 
     public CorrectedSentence correct(String keyword) {
-        //todo
-        return new CorrectedSentence(null, null);
+        Map<String, String> typoWordMaps = gets().stream().collect(Collectors.toMap(Dictionary::getTypo, Dictionary::getWord));
+
+        Map<Integer, String> typoIndexMaps = typoWordMaps.keySet()
+                .stream()
+                .filter(keyword::contains)
+                .collect(Collectors.toMap(keyword::indexOf, it -> it));
+
+        int lastFixIndex = -1;
+
+        String correctedKeyword = keyword;
+        List<CorrectionResponse> corrections = new ArrayList();
+
+        for (int i = 0; i < keyword.length(); i++) {
+            String typo = typoIndexMaps.get(i);
+            if (typo != null && lastFixIndex < i) {
+                String correctWord = typoWordMaps.get(typo);
+                correctedKeyword = correctedKeyword.replaceFirst(typo, correctWord);
+                lastFixIndex = i + correctWord.length() - 1;
+                corrections.add(new CorrectionResponse(typo, correctWord));
+            }
+        }
+
+        return new CorrectedSentence(correctedKeyword, corrections);
     }
+
 }
 
 
-//    List<String> toFix =  dictionaryService.gets()
-//            .stream()
-//            .filter(dictionary -> keyword.contains(dictionary.getTypo()))
-//            .map(dictionary -> dictionary.getTypo())
-//            .collect(Collectors.toList());
-//
-//    Map<String, String> typoMap = dictionaryService.gets()
-//            .stream()
-//            .filter(dictionary -> keyword.contains(dictionary.getTypo()))
-//            .collect(Collectors.toMap(it -> it.getTypo(), it -> it.getWord()));

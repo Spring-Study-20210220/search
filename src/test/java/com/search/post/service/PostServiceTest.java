@@ -1,5 +1,7 @@
 package com.search.post.service;
 
+import com.search.censor.service.CensoredWordService;
+import com.search.dictionary.service.DictionaryService;
 import com.search.post.entity.Post;
 import com.search.post.repository.PostRepository;
 import com.search.post.req.SavePostRequest;
@@ -29,10 +31,8 @@ public class PostServiceTest {
 
     @Mock
     private PostRepository postRepository;
-
     @Mock
     private UserRepository userRepository;
-    
     @InjectMocks
     private PostService postService;
 
@@ -58,11 +58,17 @@ public class PostServiceTest {
     }
 
     @Test
-    void searchTypo() {
-        String typo = "민초 실어";
-        SearchPostsResponse searchPostsResponse = postService.search(typo);
-        List<CorrectionResponse> corrections = searchPostsResponse.getCorrections();
-        assertThat(corrections.get(0).getFrom()).isEqualTo("실어");
-        assertThat(corrections.get(0).getTo()).isEqualTo("싫어");
+    void search() {
+        List<Post> posts = List.of(
+                new Post(1L, user, "fuck contents", 0, LocalDateTime.now(), LocalDateTime.now()),
+                new Post(2L, user, "shit contents", 0, LocalDateTime.now(), LocalDateTime.now()),
+                new Post(3L, user, "test contents", 0, LocalDateTime.now(), LocalDateTime.now())
+        );
+
+        given(postRepository.findAll()).willReturn(posts);
+
+        List<Post> searchedPost = postService.search("fuck shit");
+
+        assertThat(searchedPost.size()).isEqualTo(2);
     }
 }
