@@ -20,4 +20,12 @@ public class UserService {
         User saveUser = userRepository.save(user);
         return new UserResponse(saveUser.getId());
     }
+
+    @Transactional
+    public boolean isMinor(Long id){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 id"));
+
+        return user.getAge() < 20;
+    }
 }
