@@ -3,9 +3,11 @@ package com.search.post.entity;
 import com.search.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -40,9 +42,19 @@ public class Post {
         this.updatedAt = updatedAt;
     }
 
+    public void increaseViewCnt() {
+        viewCnt++;
+    }
+
     public boolean isContain(List<String> keywordSplits) {
         return keywordSplits.stream()
                 .filter(split -> content.contains(split))
                 .count() > 0;
+    }
+
+    public int getEncounterKeywordCnt(String keywordSentence) {
+        return Arrays.stream(keywordSentence.split(" "))
+                .mapToInt(it -> StringUtils.countOccurrencesOf(content, it))
+                .sum();
     }
 }

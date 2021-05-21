@@ -48,4 +48,10 @@ public class PostService {
                 .filter(post -> post.isContain(keywordSplits))
                 .collect(Collectors.toList());
     }
+
+    public void increaseViewCnt(List<Long> ids) {
+        for(Post post : postRepository.findByIdIn(ids)) {
+            post.increaseViewCnt();
+        }
+    }
 }

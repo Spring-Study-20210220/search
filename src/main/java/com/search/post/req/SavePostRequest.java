@@ -10,5 +10,4 @@ import java.util.List;
 public class SavePostRequest {
     private final Long userId;
     private final String content;
-    private final List<Long> taggedUserIds;
 }

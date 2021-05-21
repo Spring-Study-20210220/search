@@ -1,10 +1,12 @@
 package com.search.sort.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity(name = "sort_criteria")
@@ -15,7 +17,7 @@ public class SortCriteria {
     @Enumerated(value = EnumType.STRING)
     private Method method;
 
-    enum Method {
+    public enum Method {
         MATCH_COUNT, VIEW_COUNT, LATEST
     }
 }

@@ -28,10 +28,14 @@ public class SearchService {
         CorrectedSentence correctedSentence = dictionaryService.correct(keyword);
         List<Post> filteredPosts = postService.search(correctedSentence.getValue());
 
+        sortCriteriaService.sortByLatestCriteria(filteredPosts, correctedSentence.getValue());
+
         if (age >= 19) {
             List<PostResponse> postResponses = filteredPosts.stream()
                     .map(post -> new PostResponse(post.getUser().getId(), post.getUser().getName(), post.getContent()))
                     .collect(Collectors.toList());
+
+            postService.increaseViewCnt(filteredPosts.stream().map(Post::getId).collect(Collectors.toList()));
 
             return new SearchPostsResponse(postResponses, correctedSentence.getCorrections(), false);
         }
@@ -42,6 +46,9 @@ public class SearchService {
         List<PostResponse> postResponses = censoredPosts.stream()
                 .map(post -> new PostResponse(post.getUser().getId(), post.getUser().getName(), post.getContent()))
                 .collect(Collectors.toList());
+
+        postService.increaseViewCnt(censoredPosts.stream().map(Post::getId).collect(Collectors.toList()));
+
 
         return new SearchPostsResponse(postResponses, correctedSentence.getCorrections(), isCensored);
     }
