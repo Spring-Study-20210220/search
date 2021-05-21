@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -18,18 +19,18 @@ public class CensorWordService {
     @Transactional
     public CensoredResult censorWord(List<String> words){
 
-        List<String> censored = new ArrayList<>();
         boolean isCensored = false;
         for(String word : words) {
             Optional<CensorWord> optional = censorWordRepository.findByWord(word);
-            if(optional.isEmpty()) {
-                censored.add(word);
-            }
             if(optional.isPresent()) {
                 isCensored = true;
-                censored.add(Strings.repeat("X", word.length()));
+                break;
             }
         }
+
+        List<String> censored = censorWordRepository.findAll().stream()
+                                                .map(CensorWord::getWord)
+                                                .collect(Collectors.toList());
 
         return CensoredResult.builder()
                 .censoredWords(censored)

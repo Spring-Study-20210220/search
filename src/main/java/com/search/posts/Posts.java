@@ -45,7 +45,16 @@ public class Posts {
         this.content = content;
     }
 
+    public Posts(String content, User user) {
+        this.content = content;
+        this.user = user;
+    }
+
     public void addTaggedUser(TaggedUser taggedUser){
         taggedUsers.add(taggedUser);
+    }
+
+    public void updateViewcnt(int count) {
+        this.viewcnt = count;
     }
 }

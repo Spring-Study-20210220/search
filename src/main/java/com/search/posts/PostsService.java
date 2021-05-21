@@ -3,15 +3,18 @@ package com.search.posts;
 import com.search.censorword.CensorWordService;
 import com.search.censorword.dto.CensoredResult;
 import com.search.posts.dto.PostSearchResponse;
+import com.search.posts.dto.PostsInfo;
 import com.search.posts.dto.PostsSaveResponse;
 import com.search.taggeduser.TaggedUserService;
 import com.search.typodictionary.TypoDictionaryService;
 import com.search.typodictionary.dto.TypoDictionaryInfo;
 import com.search.user.UserService;
+import com.search.user.dto.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class PostsService {
     private final PostsRepository postsRepository;
+    private final PostsRepositorySupport postsRepositorySupport;
     private final TaggedUserService taggedUserService;
     private final TypoDictionaryService typoDictionaryService;
     private final UserService userService;
@@ -36,14 +40,45 @@ public class PostsService {
     public PostSearchResponse searchPosts(String keyword, Long userId) {
 
         List<TypoDictionaryInfo> typoWords = typoDictionaryService.checkWords(keywordSplit(keyword));
-        List<String> words = typoWords.stream()
+        List<String> toWords = typoWords.stream()
                                     .map(TypoDictionaryInfo::getTo)
                                     .collect(Collectors.toList());
+        List<String> censoredWords = Collections.emptyList();
+        Boolean censored = false;
         if(userService.isMinor(userId)) {
-            CensoredResult censorWords = censorWordService.censorWord(words);
+            CensoredResult censorWords = censorWordService.censorWord(toWords);
+            censored = censorWords.isCensored();
+            censoredWords = censorWords.getCensoredWords();
         }
 
-        return null;
+        List<Posts> posts = postsRepositorySupport.findByKeywords(toWords, censoredWords);
+        List<PostsInfo> data = posts.stream()
+                .map(it -> new PostsInfo(
+                        it.getId(),
+                        it.getUser().getName(),
+                        it.getContent(),
+                        it.getTaggedUsers().stream()
+                                .map(taggedUser -> new UserInfo(
+                                        taggedUser.getUser().getId(),
+                                        taggedUser.getUser().getName()))
+                                .collect(Collectors.toList())))
+                .collect(Collectors.toList());
+
+        updatePostsViewCount(posts);
+
+        return PostSearchResponse.builder()
+                .censored(censored)
+                .corrected(typoWords)
+                .data(data)
+                .build();
+    }
+
+    private void updatePostsViewCount(List<Posts> posts) {
+        for(Posts post : posts) {
+            int count = post.getViewcnt();
+            post.updateViewcnt(count+1);
+            postsRepository.save(post);
+        }
     }
 
     private String[] keywordSplit(String keyword){

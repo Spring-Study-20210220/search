@@ -14,7 +14,7 @@ public class CensoredResult {
     private List<String> censoredWords;
 
     @Builder
-    public CensoredResult(boolean censored, List<String> censoredWords) {
+    public CensoredResult(boolean censored,  List<String> censoredWords) {
         this.censored = censored;
         this.censoredWords = censoredWords;
     }

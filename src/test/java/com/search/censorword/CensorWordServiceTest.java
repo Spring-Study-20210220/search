@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CensorWordServiceTest {
+
     @InjectMocks
     private CensorWordService censorWordService;
     @Mock
@@ -34,10 +36,13 @@ public class CensorWordServiceTest {
         List<String> words = Arrays.asList("바보","퍼보","스프링");
 
         given(censorWordRepository.findByWord("바보")).willReturn(Optional.of(censorWord));
+        given(censorWordRepository.findAll()).willReturn(Collections.singletonList(censorWord));
+
         //when
         CensoredResult result = censorWordService.censorWord(words);
+
         //then
         assertThat(result.isCensored()).isEqualTo(true);
-        assertThat(result.getCensoredWords()).contains("XX");
+        assertThat(result.getCensoredWords()).contains("바보");
     }
 }
