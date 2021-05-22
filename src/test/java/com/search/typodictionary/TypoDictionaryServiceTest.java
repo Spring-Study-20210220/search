@@ -1,14 +1,13 @@
 package com.search.typodictionary;
 
 import com.search.typodictionary.dto.TypoDictionaryInfo;
-import org.assertj.core.api.Assertions;
+import com.search.typodictionary.dto.TypoResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,13 +15,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class TypoDictionaryServiceTest {
+class TypoDictionaryServiceTest {
     @InjectMocks
     private TypoDictionaryService typoDictionaryService;
     @Mock
     private TypoDictionaryRepository typoDictionaryRepository;
+
     @Test
-    void 검색어교정테스트(){
+    void 검색어교정테스트() {
         //when
         String[] keywords = {"스프링", "테스트"};
         TypoDictionary typoDictionary1 = TypoDictionary.builder()
@@ -46,17 +46,11 @@ public class TypoDictionaryServiceTest {
                 .willReturn(Optional.of(typoDictionary1))
                 .willReturn(Optional.of(typoDictionary2));
         //then
-        List<TypoDictionaryInfo> result = typoDictionaryService.checkWords(keywords);
-//        for(TypoDictionaryInfo info : result) {
-//            assertThat(info.get).
-//        }
-//
-//        for(int i = 0; i < keywords.length; i++) {
-//
-//        }
-        assertThat(result).filteredOn("from","스프링")
+        TypoResult result = typoDictionaryService.correctWords(keywords);
+
+        assertThat(result.getTypoDictionaryInfos()).filteredOn("from", "스프링")
                 .containsOnly(typoDictionaryInfo1);
-        assertThat(result).filteredOn("from","테스트")
+        assertThat(result.getTypoDictionaryInfos()).filteredOn("from", "테스트")
                 .containsOnly(typoDictionaryInfo2);
     }
 }

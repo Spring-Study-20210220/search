@@ -1,5 +1,6 @@
 package com.search.typodictionary.dto;
 
+import com.search.typodictionary.TypoDictionary;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +16,12 @@ public class TypoDictionaryInfo {
     public TypoDictionaryInfo(String from, String to) {
         this.from = from;
         this.to = to;
+    }
+
+    public static TypoDictionaryInfo from(TypoDictionary typoDictionary) {
+        return TypoDictionaryInfo.builder()
+                .from(typoDictionary.getTypo())
+                .to(typoDictionary.getWord())
+                .build();
     }
 }
