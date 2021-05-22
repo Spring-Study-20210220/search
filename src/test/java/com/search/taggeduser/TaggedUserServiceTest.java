@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class TaggedUserServiceTest {
+class TaggedUserServiceTest {
 
     @InjectMocks
     private TaggedUserService taggedUserService;
@@ -30,7 +30,7 @@ public class TaggedUserServiceTest {
 
     //List<Long> taggedIds, Posts posts
     @Test
-    void 포스트에_유저를_태깅(){
+    void 포스트에_유저를_태깅() {
         //given
         User user1 = User.builder()
                 .name("testuser1")
@@ -60,7 +60,7 @@ public class TaggedUserServiceTest {
                 .willReturn(taggedUser2);
 
         //when
-        taggedUserService.linkedUserToPost(Arrays.asList(1L, 2L),posts);
+        taggedUserService.linkedUserToPost(Arrays.asList(1L, 2L), posts);
 
         //then
         assertThat(user1.getTaggedUsers().size()).isEqualTo(1);

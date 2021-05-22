@@ -31,5 +31,4 @@ public class TaggedUser {
         this.posts = posts;
         this.user = user;
     }
-
 }
