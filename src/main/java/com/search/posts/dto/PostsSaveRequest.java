@@ -1,6 +1,5 @@
 package com.search.posts.dto;
 
-import com.search.posts.Posts;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

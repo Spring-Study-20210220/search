@@ -18,7 +18,7 @@ import java.util.List;
 
 @AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PostsAcceptanceTest {
+class PostsAcceptanceTest {
 
     @Autowired
     private WebTestClient webTestClient;
@@ -34,10 +34,11 @@ public class PostsAcceptanceTest {
     @Test
     void 포스트_등록_테스트() {
         PostsTestData postsTestData = new PostsTestData(webTestClient);
-        List<Long> taggedUserIdList= new LinkedList<>();
-        taggedUserIdList.add(postsTestData.userSaveForTest("테스트1",25));
-        taggedUserIdList.add(postsTestData.userSaveForTest("테스트2",30));
-        taggedUserIdList.add(postsTestData.userSaveForTest("테스트3",35));
+        long authorId = postsTestData.getTestUserId("작성자", 40);
+        List<Long> taggedUserIdList = new LinkedList<>();
+        taggedUserIdList.add(postsTestData.getTestUserId("테스트1", 25));
+        taggedUserIdList.add(postsTestData.getTestUserId("테스트2", 30));
+        taggedUserIdList.add(postsTestData.getTestUserId("테스트3", 35));
 
         PostsSaveRequest request = PostsSaveRequest.builder()
                 .content("content")
@@ -47,6 +48,7 @@ public class PostsAcceptanceTest {
         PostsSaveResponse response = webTestClient
                 .post()
                 .uri("/posts")
+                .header("Authorization", Long.toString(authorId))
                 .body(Mono.just(request), PostsSaveRequest.class)
                 .exchange()
                 .expectStatus().isCreated()
@@ -59,7 +61,8 @@ public class PostsAcceptanceTest {
 
     @Test
     void 포스트에_태그된_유저가_없는_경우() {
-
+        PostsTestData postsTestData = new PostsTestData(webTestClient);
+        long authorId = postsTestData.getTestUserId("작성자", 40);
         PostsSaveRequest request = PostsSaveRequest.builder()
                 .content("content")
                 .taggedUserIds(Collections.emptyList())
@@ -68,6 +71,7 @@ public class PostsAcceptanceTest {
         PostsSaveResponse response = webTestClient
                 .post()
                 .uri("/posts")
+                .header("Authorization", Long.toString(authorId))
                 .body(Mono.just(request), PostsSaveRequest.class)
                 .exchange()
                 .expectStatus().isCreated()

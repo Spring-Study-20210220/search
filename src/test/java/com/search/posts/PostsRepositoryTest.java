@@ -1,6 +1,5 @@
 package com.search.posts;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,14 +12,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import(PostsRepositorySupport.class)
-public class PostsRepositoryTest {
+class PostsRepositoryTest {
     @Autowired
     private PostsRepository postsRepository;
 
     @Autowired
     private PostsRepositorySupport postsRepositorySupport;
+
     @Test
-    void 검색쿼리테스트(){
+    void 검색쿼리테스트() {
 
         Posts posts1 = Posts.builder()
                 .content("토비의 스프링 책 구매하실분 찾아요")
@@ -35,7 +35,7 @@ public class PostsRepositoryTest {
         postsRepository.save(posts2);
         postsRepository.save(posts3);
 
-        List<String> keyword = Arrays.asList("스프링","토비","구매");
+        List<String> keyword = Arrays.asList("스프링", "토비", "구매");
 
         List<Posts> Result = postsRepositorySupport.findByKeywords(keyword);
         assertThat(Result.size()).isEqualTo(2);

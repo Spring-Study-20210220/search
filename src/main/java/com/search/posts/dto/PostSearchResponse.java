@@ -1,7 +1,5 @@
 package com.search.posts.dto;
 
-import com.search.posts.dto.PostsInfo;
-import com.search.typodictionary.TypoDictionary;
 import com.search.typodictionary.dto.TypoDictionaryInfo;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,12 +16,19 @@ public class PostSearchResponse {
 
     private List<TypoDictionaryInfo> corrected;
 
-    private Boolean censored;
+    private boolean censored;
 
     @Builder
-    public PostSearchResponse(List<PostsInfo> data, List<TypoDictionaryInfo> corrected, Boolean censored) {
+    public PostSearchResponse(List<PostsInfo> data, List<TypoDictionaryInfo> corrected, boolean censored) {
         this.data = data;
         this.corrected = corrected;
         this.censored = censored;
+    }
+
+    @Builder
+    public PostSearchResponse(List<PostsInfo> data, List<TypoDictionaryInfo> corrected) {
+        this.data = data;
+        this.corrected = corrected;
+        this.censored = false;
     }
 }

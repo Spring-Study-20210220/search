@@ -23,10 +23,9 @@ public class Posts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int viewcnt=0;
+    private int viewcnt = 0;
 
     private String content;
-
     @CreatedDate
     private LocalDate created_at;
 
@@ -45,7 +44,20 @@ public class Posts {
         this.content = content;
     }
 
-    public void addTaggedUser(TaggedUser taggedUser){
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void addTaggedUser(TaggedUser taggedUser) {
         taggedUsers.add(taggedUser);
+    }
+
+    public void increaseViewcnt() {
+        this.viewcnt += 1;
+    }
+
+    public boolean containAny(List<String> keywords) {
+        return keywords.stream()
+                .anyMatch(keyword -> content.contains(keyword));
     }
 }
