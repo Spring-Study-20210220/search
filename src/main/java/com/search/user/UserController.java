@@ -17,7 +17,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("")
-    ResponseEntity<UserResponse> saveUser(UserRequest userDto) {
+    public ResponseEntity<UserResponse> saveUser(UserRequest userDto) {
         UserResponse userResponse = userService.saveUser(
                 userDto.getName(),
                 userDto.getAge());
