@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @Service
 public class PostsService {
     private final PostsRepository postsRepository;
-    private final PostsRepositorySupport postsRepositorySupport;
     private final TaggedUserService taggedUserService;
     private final TypoDictionaryService typoDictionaryService;
     private final UserService userService;
@@ -40,18 +39,24 @@ public class PostsService {
     public PostSearchResponse searchPosts(String keyword, Long userId) {
 
         List<TypoDictionaryInfo> typoWords = typoDictionaryService.checkWords(keywordSplit(keyword));
+
         List<String> toWords = typoWords.stream()
                                     .map(TypoDictionaryInfo::getTo)
                                     .collect(Collectors.toList());
         List<String> censoredWords = Collections.emptyList();
-        Boolean censored = false;
+        boolean censored = false;
         if(userService.isMinor(userId)) {
             CensoredResult censorWords = censorWordService.censorWord(toWords);
             censored = censorWords.isCensored();
             censoredWords = censorWords.getCensoredWords();
         }
 
-        List<Posts> posts = postsRepositorySupport.findByKeywords(toWords, censoredWords);
+        List<String> finalCensoredWords = censoredWords;
+        List<Posts> posts = postsRepository.findAll().stream()
+                .filter(it -> it.containsWords(toWords))
+                .filter(it -> it.notContainsCensoredWords(finalCensoredWords))
+                .collect(Collectors.toList());
+
         List<PostsInfo> data = posts.stream()
                 .map(it -> new PostsInfo(
                         it.getId(),

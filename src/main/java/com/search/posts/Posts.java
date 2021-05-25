@@ -57,4 +57,22 @@ public class Posts {
     public void updateViewcnt(int count) {
         this.viewcnt = count;
     }
+
+    public boolean containsWords(List<String> words) {
+        for(String word : words) {
+            if (content.contains(word)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean notContainsCensoredWords(List<String> censoredWords) {
+        for(String censoredWord : censoredWords) {
+            if (content.contains(censoredWord)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
